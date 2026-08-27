@@ -185,7 +185,7 @@ p{font-size:clamp(17px,3vw,22px);line-height:1.7}
 
 <!-- MUSIC: put music.mp3 beside this file and uncomment the src below -->
 <audio id="music" loop src="music.mp3"></audio>
-<button class="music" id="musicBtn">🎵 Music On</button>
+<button class="music" id="musicBtn">🎵 Music Off</button>
 
 <!-- SCREEN 1 -->
 <section class="screen active" id="s1">
@@ -322,6 +322,7 @@ function go(n){
 
 function openEnvelope(){
   envelope.classList.add("open");
+  tryPlayMusic();
   setTimeout(()=>go(2),950);
 }
 envelope.addEventListener("click",openEnvelope);
@@ -357,7 +358,6 @@ yes.addEventListener("click",()=>{
   go(5);
   launchConfetti();
   burstHearts();
-  tryPlayMusic();
 });
 
 function launchConfetti(){
@@ -392,8 +392,19 @@ setInterval(heart,650);
 function burstHearts(){for(let i=0;i<50;i++)setTimeout(heart,i*40)}
 
 async function tryPlayMusic(){
-  if(!music.src)return;
-  try{await music.play();musicOn=true;musicBtn.textContent="🎵 Music On"}catch(e){}
+  if(!music.src){
+    console.log("Music file not found.");
+    return;
+  }
+
+  try{
+    await music.play();
+    musicOn=true;
+    musicBtn.textContent="🎵 Music On";
+  }catch(e){
+    console.log("Music playback was blocked:", e);
+    musicBtn.textContent="🎵 Tap for Music";
+  }
 }
 musicBtn.addEventListener("click",async()=>{
   if(!music.src){
